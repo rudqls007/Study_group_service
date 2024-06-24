@@ -14,13 +14,13 @@ public class SignUpFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(SignUpFormDto.class);
+        return clazz.isAssignableFrom(SignUpForm.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
 
-        SignUpFormDto signUpFormDto = (SignUpFormDto)target;
+        SignUpForm signUpFormDto = (SignUpForm)target;
 
        if(accountRepository.existsByEmail(signUpFormDto.getEmail()))
            errors.rejectValue("email", "invalid.email",

@@ -20,8 +20,7 @@ public class AccountController {
 
 
     private final SignUpFormValidator signUpFormValidator;
-    private final JavaMailSender javaMailSender;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;;
 
 
     @InitBinder("signForm")
@@ -32,41 +31,21 @@ public class AccountController {
     @GetMapping("/sign-up")
     public String signUpForm(Model model) {
 
-        model.addAttribute("signUpForm", new SignUpFormDto());
+        model.addAttribute("signUpForm", new SignUpForm());
 
         return "account/sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String signUpSubmit(@Valid SignUpFormDto signUpFormDto, Errors errors) {
-
+    public String signUpSubmit(@Valid SignUpForm signUpForm, Errors errors) {
         if (errors.hasErrors()) {
             return "account/sign-up";
         }
 
-        Account account = Account.builder()
-                .email(signUpFormDto.getEmail())
-                .nickname(signUpFormDto.getNickname())
-                .password(signUpFormDto.getPassword()) //TODO encoding 필수
-                .studyCreatedByWeb(true)
-                .studyEnrollmentResultByWeb(true)
-                .studyUpdateByWeb(true)
-                .build();
-
-        Account newAccount = accountRepository.save(account);
-
-        newAccount.generateEmailCheckToken();
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(newAccount.getEmail());
-        mailMessage.setSubject("스터디올래, 회원 가입 인증");
-        mailMessage.setText("/check-email-token?token=" + newAccount.getEmailCheckToken() +
-                "&email=" + newAccount.getEmail());
-
-        javaMailSender.send(mailMessage);
+        accountService.processNewAccount(signUpForm);
 
 
-        //TODO 회원 가입 처리
         return "redirect:/";
-
     }
+
 }
