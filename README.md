@@ -1,6 +1,12 @@
 스터디 모임 관리 서비스
 
-# 시작 가이드
+## ➤ Navigation
+- [시작 가이드](#시작-가이드)
+- [Stacks](#🔧_Stacks)
+- [프로젝트 소개](#프로젝트-소개)
+- [트러블 슈팅](#트러블-슈팅)
+
+## 시작 가이드
 
 ### IDE에서 실행 방법
 
@@ -38,8 +44,32 @@ CREATE USER testuser WITH ENCRYPTED PASSWORD 'testpass';
 GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 ```
 
+## 🔧 Stacks
 
-# 트러블 슈팅
+<div align="center">
+<h3>Language</h3>
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
+<br>
+<h3>Framework</h3>
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+<img src="https://img.shields.io/badge/hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white">
+<img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+<img src="https://img.shields.io/badge/thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
+<br>
+<h3>DB</h3>
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
+<br>
+<h3>Communication</h3>
+<br>
+<img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
+
+</div>
+
+## 프로젝트 소개
+
+
+## 트러블 슈팅
 
 ⛔ 이메일을 체크 토큰 ( generateEmailCheckToken ) = NULL 오류
 
