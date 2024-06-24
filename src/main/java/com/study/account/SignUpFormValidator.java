@@ -20,14 +20,14 @@ public class SignUpFormValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 
-        SignUpFormDto signUpFormDto = (SignUpFormDto)errors;
+        SignUpFormDto signUpFormDto = (SignUpFormDto)target;
 
-       if(accountRepository.existByEmail(signUpFormDto.getEmail()))
+       if(accountRepository.existsByEmail(signUpFormDto.getEmail()))
            errors.rejectValue("email", "invalid.email",
                    new Object[]{signUpFormDto.getEmail()}, "이미 사용중인 이메일입니다.");
 
 
-       if(accountRepository.existByNickname(signUpFormDto.getNickname()))
+       if(accountRepository.existsByNickname(signUpFormDto.getNickname()))
            errors.rejectValue("nickname","invalid.nickname",
                    new Object[]{signUpFormDto.getNickname()}, "이미 사용중인 닉네임입니다.");
         // TODO email, nickname
