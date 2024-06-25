@@ -92,28 +92,27 @@ GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
    - 솔트는 해시함수의 입력에 추가되는 랜덤 데이터
    - 솔트를 사용하면 같은 비밀번호라도 솔트가 다르면 다른 해시 값을 생성하므로, 사전 공격(Dictionary Attack) 및 무차별 대입 공격(Brute-Force Attack)을 방지할 수 있음.
 
-### 예시 코드
+### 코드
 
 ```java
-package com.example.security;
+package com.study.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class PasswordEncoderExample {
-    public static void main(String[] args) {
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+@Configuration
+public class AppConfig {
 
-        String rawPassword = "mySecretPassword";
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-
-        System.out.println("Raw Password: " + rawPassword);
-        System.out.println("Encoded Password: " + encodedPassword);
-
-        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
-        System.out.println("Passwords match: " + matches);
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
+
+
+
 ```
 
 
