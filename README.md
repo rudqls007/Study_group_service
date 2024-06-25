@@ -31,6 +31,7 @@
 ## ➤ Navigation
 - [시작 가이드](#시작-가이드)
 - [프로젝트 소개](#프로젝트-소개)
+- [프로젝트 구성](#프로젝트_구성)
 - [트러블 슈팅](#트러블-슈팅)
 
 ## 시작 가이드
@@ -72,6 +73,48 @@ GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 ```
 
 ## 프로젝트 소개
+
+
+## 프로젝트 구성
+
+
+### 스프링 시큐리티 PasswordEncoder 예제
+
+이 프로젝트는 스프링 시큐리티에서 권장하는 `PasswordEncoder`를 사용하는 방법을 보여줍니다. `PasswordEncoderFactories.createDelegatingPasswordEncoder()`를 사용하여 여러 해시 알고리즘을 지원하며, 기본적으로 `bcrypt` 알고리즘을 사용합니다.
+
+### 해싱 알고리즘(bcrypt)과 솔트(salt)
+
+1. **해싱 알고리즘(bcrypt)**:
+   - 비밀번호를 해시하여 저장하면, 비밀번호가 노출되더라도 원래 비밀번호를 알 수 없도록 합니다.
+   - `bcrypt`는 현재 널리 사용되는 강력한 해싱 알고리즘 중 하나로, 해킹 공격에 대비하여 설계되었습니다.
+
+2. **솔트(salt)**:
+   - 솔트는 해시함수의 입력에 추가되는 랜덤 데이터입니다.
+   - 솔트를 사용하면 같은 비밀번호라도 솔트가 다르면 다른 해시 값을 생성하므로, 사전 공격(Dictionary Attack) 및 무차별 대입 공격(Brute-Force Attack)을 방지할 수 있습니다.
+
+### 예시 코드
+
+```java
+package com.example.security;
+
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+public class PasswordEncoderExample {
+    public static void main(String[] args) {
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+        String rawPassword = "mySecretPassword";
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        System.out.println("Raw Password: " + rawPassword);
+        System.out.println("Encoded Password: " + encodedPassword);
+
+        boolean matches = passwordEncoder.matches(rawPassword, encodedPassword);
+        System.out.println("Passwords match: " + matches);
+    }
+}
+```
 
 
 ## 트러블 슈팅
