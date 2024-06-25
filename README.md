@@ -80,17 +80,17 @@ GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 
 ### 스프링 시큐리티 PasswordEncoder 예제
 
-이 프로젝트는 스프링 시큐리티에서 권장하는 `PasswordEncoder`를 사용하는 방법을 보여줍니다. `PasswordEncoderFactories.createDelegatingPasswordEncoder()`를 사용하여 여러 해시 알고리즘을 지원하며, 기본적으로 `bcrypt` 알고리즘을 사용합니다.
+`PasswordEncoderFactories.createDelegatingPasswordEncoder()`를 사용하여 여러 해시 알고리즘을 지원하며, 기본적으로 `bcrypt` 알고리즘을 사용함.
 
 ### 해싱 알고리즘(bcrypt)과 솔트(salt)
 
 1. **해싱 알고리즘(bcrypt)**:
-   - 비밀번호를 해시하여 저장하면, 비밀번호가 노출되더라도 원래 비밀번호를 알 수 없도록 합니다.
-   - `bcrypt`는 현재 널리 사용되는 강력한 해싱 알고리즘 중 하나로, 해킹 공격에 대비하여 설계되었습니다.
+   - 비밀번호를 해시하여 저장하면, 비밀번호가 노출되더라도 원래 비밀번호를 알 수 없도록 함.
+   - `bcrypt`는 현재 널리 사용되는 강력한 해싱 알고리즘 중 하나로, 해킹 공격에 대비하여 설계되었음.
 
 2. **솔트(salt)**:
-   - 솔트는 해시함수의 입력에 추가되는 랜덤 데이터입니다.
-   - 솔트를 사용하면 같은 비밀번호라도 솔트가 다르면 다른 해시 값을 생성하므로, 사전 공격(Dictionary Attack) 및 무차별 대입 공격(Brute-Force Attack)을 방지할 수 있습니다.
+   - 솔트는 해시함수의 입력에 추가되는 랜덤 데이터
+   - 솔트를 사용하면 같은 비밀번호라도 솔트가 다르면 다른 해시 값을 생성하므로, 사전 공격(Dictionary Attack) 및 무차별 대입 공격(Brute-Force Attack)을 방지할 수 있음.
 
 ### 예시 코드
 
