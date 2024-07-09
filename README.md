@@ -115,6 +115,39 @@ public class AppConfig {
 
 ```
 
+### 스프링 시큐리티 UsernamePasswordAuthenticationToken 생성 예제
+
+`UsernamePasswordAuthenticationToken` 를 사용해 사용자 권한 부여 및 인증 토큰을 생성하여 로그인 처리를 위해 사용함.
+
+### UsernamePasswordAuthenticationToken 와 SecurityContextHolder
+
+1. **UsernamePasswordAuthenticationToken**:
+
+   - Spring Security에서 제공하는 클래스 중 하나로 사용자 이름(username), 비밀번호(password), 권한(authrities)을 담는 토큰임.
+   - List.of(new SimpleGrantedAuthority("ROLE_USER")) 를 통해 사용자 권한을 설정함.
+
+2. **SecurityContextHolder**:
+
+   - SecurityContextHolder 는 Spring Security에서 현재 스레드의 보안 컨텍스트를 보유하는 클래스임.
+   - 애플리케이션의 각 요청에 대해 SecurityContext 를 제공하여, 현재 사용자의 인증 상태를 저장하고 관리함.
+   - SecurityContext 는 현재 인증된 사용자에 대한 정보를 포함하는 객체임.
+   - 즉, SecurityContextHolder.getContext() 를 호출하여 현재 스레드의 SecurityContext 를 가져옴
+
+### 코드
+
+```java
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                account.getNickname(),
+                account.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(token);
+
+```
+
 
 ## 트러블 슈팅
 
