@@ -4,6 +4,7 @@ import com.study.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +16,13 @@ public class AccountService {
 
     private final JavaMailSender javaMailSender;
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private Account saveNewAccount(SignUpForm signUpForm) {
         Account account = Account.builder()
                 .email(signUpForm.getEmail())
                 .nickname(signUpForm.getNickname())
-                .password(signUpForm.getPassword()) // TODO encoding 해야함
+                .password(passwordEncoder.encode(signUpForm.getPassword() )) // TODO encoding 해야함
                 .studyCreatedByWeb(true)
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdateByWeb(true)
