@@ -14,6 +14,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+
+
+
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -22,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, "/profile/**").permitAll()
                 .anyRequest().authenticated();
 
+
     }
 
     @Override
@@ -29,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         /* static 밑에 있는 모든 파일들은 시큐리티 허용 */
         web.ignoring()
+                .mvcMatchers("/node_modules/**")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }
