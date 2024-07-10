@@ -77,6 +77,71 @@ GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 
 ## 프로젝트 구성
 
+### Node.js 설정
+
+### npm 설치
+
+
+### Node.js 초기화 및 package.json 생성
+```
+$ npm init
+
+```
+![image](https://github.com/rudqls007/Study_group_service/assets/111556581/af3eaa2b-3687-437a-9fa2-80c4b4769c6d)
+
+
+### Bootstrap 및 jquery, Maven Wrappper 빌드
+```
+$ npm install bootstrap
+$ npm install jquery --save
+$ ./mvnw test
+```
+![image](https://github.com/rudqls007/Study_group_service/assets/111556581/a2cf065b-6ba9-478f-a1cb-d584c356c669)
+
+### Maven 빌드를 해야 하는 이유는 ?
+
+- 메이븐 pom.xml을 빌드할 때 static 디렉토리 아래에 있는 package.json도 빌드하도록 설정해야 한다.
+- 빌드를 안하면 프론트엔드 라이브러리를 받아오지 않아서 뷰에서 필요한 참조가 끊어지고 화면이 제대로 보이지 않는다.
+
+### pom.xml
+
+```
+
+
+<plugin>
+    <groupId>com.github.eirslett</groupId>
+    <artifactId>frontend-maven-plugin</artifactId>
+    <version>1.8.0</version>
+    <configuration>
+        <nodeVersion>v4.6.0</nodeVersion>
+        <workingDirectory>src/main/resources/static</workingDirectory>
+    </configuration>
+    <executions>
+        <execution>
+            <id>install node and npm</id>
+            <goals>
+                <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+        </execution>
+        <execution>
+            <id>npm install</id>
+            <goals>
+                <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+                <arguments>install</arguments>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+
+
+```
+
+
 
 ### 스프링 시큐리티 PasswordEncoder 예제
 
