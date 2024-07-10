@@ -85,7 +85,6 @@ GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 ### Node.js 초기화 및 package.json 생성
 ```
 $ npm init
-
 ```
 ![image](https://github.com/rudqls007/Study_group_service/assets/111556581/af3eaa2b-3687-437a-9fa2-80c4b4769c6d)
 
@@ -106,8 +105,6 @@ $ ./mvnw test
 ### pom.xml
 
 ```
-
-
 <plugin>
     <groupId>com.github.eirslett</groupId>
     <artifactId>frontend-maven-plugin</artifactId>
@@ -136,9 +133,6 @@ $ ./mvnw test
         </execution>
     </executions>
 </plugin>
-
-
-
 ```
 
 
