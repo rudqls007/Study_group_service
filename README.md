@@ -348,7 +348,7 @@ public class AppConfig {
         - 이메일 인증이 되지 않은 사용자는 위 로직을 통해 이메일 인증 알림창이 뜸. <br />
           
 - UserAccount
-<br />
+
      - ```
             @Getter @Setter
             public class UserAccount extends User {
