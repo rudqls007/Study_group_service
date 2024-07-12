@@ -333,9 +333,11 @@ public class AppConfig {
             스터디올레 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
         </div>
        ```
+       
         - 익명 사용자인 경우 null을 반환
         - 인증된 사용자인 경우 해당 Account 도메인 객체를 반환함.
         - 이메일 인증이 되지 않은 사용자는 위 로직을 통해 이메일 인증 알림창이 뜸.
+        - 
 - UserAccount
   - ```
         @Getter @Setter
@@ -348,6 +350,7 @@ public class AppConfig {
         }
     }
     ```
+    
       - UserAccount 클래스는 Spring Security의 User 클래스를 확장하여, 애플리케이션 사용자 정보를 포함하는 역할을 함.
       - Account 도메인 객체를 참조하여 User 클래스 생성자에 사용자 이름, 비밀번호, 권한을 초기화함.
         
@@ -364,6 +367,7 @@ public class AppConfig {
         context.setAuthentication(token);
     }
    ```
+   
     - Account 객체를 인자로 받아 사용자 인증 토큰을 생성함. ( UsernamePasswordAuthenticationToken )
     - 생성된 토큰을 SecurityContext에 설정하여 사용자 인증 상태를 유지함.
   
@@ -384,6 +388,7 @@ public class AppConfig {
     }
     }
   ```
+
   - UserDetailService 인터페이스를 상속 받음.
   - 사용자의 email or nickname을 인자로 받아 데이터베이스에서 해당 사용자를 조회함.
   - 사용자를 찾지 못할 경우에 UsernameNotFoundException 예외를 발생 시킴.
