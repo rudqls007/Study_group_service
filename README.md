@@ -300,3 +300,107 @@ public class AppConfig {
 
   그 다음 newAccount.generateEmailCheckToken();가 실행 되는데 트랜잭션 범위를 벗어났기에 Detached 상태가 됨.</br>
   이 메소드가 트랜잭션 범위 안에 있어야 정상적인 값이 DB에 저장이 되므로 메소드에 @Transactional 어노테이션을 붙여주어야 함.</br>
+
+
+
+## 프로젝트 기능
+
+### 로그인
+
+
+- @CurrentUser
+
+  ```
+    import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
+    import java.lang.annotation.ElementType;
+    import java.lang.annotation.Retention;
+    import java.lang.annotation.RetentionPolicy;
+    import java.lang.annotation.Target;
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.PARAMETER)
+    @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : account")
+    public @interface CurrentUser {
+    }
+  ```
+
+  - @Retnention(RetentionPolicy.RUNTIME)
+      - 런타임까지 유지된다는 것을 의미하며, 런타임 시에 리플렉션을 사용하여 이 어노테이션을 읽을 수 있음.
+  - @Target(ElementType.PARAMETER)
+      - 인증된 사용자 정보를 컨트롤러 메서드의 파라미터로 바인딩하기 위해 사용할 목적으로 메서드의 파라미터에서만 적용할 수 있다는 것을 의미함.
+  - @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : account")
+      - 인증된 사용자 객체를 메서드 파라미터로 바인딩하는 데 사용함.
+      - #this = 현재 인증 객체 즉 Account 객체를 나타냄.
+      - 현재 인증 객체가 anonymousUser( 익명 사용자 )라면, null을 그렇지 않다면, 인증된 사용자 객체의 account 필드를 반환함.
+        
+  - @CurrentUser 어노테이션은 컨트롤러 메서드의 파라미터에서 현재 인증된 사용자 정보를 쉽게 접근할 수 있도록 도와주는 역할을 함.
+    ![image](https://github.com/user-attachments/assets/7882dba7-69dc-49c4-9219-6d03c496a581)
+    -  ```
+       <!-- account 정보가 있고 email 정보가 없으면 이메일 인증을 하게끔 만드는 알림창 -->
+        <div class="alert alert-warning" role="alert" th:if="${account != null && !account.emailVerified}">
+            스터디올레 가입을 완료하려면 <a href="#" th:href="@{/check-email}" class="alert-link">계정 인증 이메일을 확인</a>하세요.
+        </div>
+       ```
+       
+        - 익명 사용자인 경우 null을 반환
+        - 인증된 사용자인 경우 해당 Account 도메인 객체를 반환함.
+        - 이메일 인증이 되지 않은 사용자는 위 로직을 통해 이메일 인증 알림창이 뜸. <br />
+          
+- UserAccount
+
+     - ```
+            @Getter @Setter
+            public class UserAccount extends User {
+            private final Account account;
+    
+            public UserAccount(Account account) {
+                super(account.getNickname(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                this.account = account;
+            }
+        }
+        ```
+        
+          - UserAccount 클래스는 Spring Security의 User 클래스를 확장하여, 애플리케이션 사용자 정보를 포함하는 역할을 함.
+          - Account 도메인 객체를 참조하여 User 클래스 생성자에 사용자 이름, 비밀번호, 권한을 초기화함. 
+        
+- AccountSevice
+
+     - ```
+           public void login(Account account) {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account),
+                account.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+    
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(token);
+        }
+       ```
+       
+        - Account 객체를 인자로 받아 사용자 인증 토큰을 생성함. ( UsernamePasswordAuthenticationToken )
+        - 생성된 토큰을 SecurityContext에 설정하여 사용자 인증 상태를 유지함. 
+      
+    - ```
+         @Override
+        public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+            Account account = accountRepository.findByEmail(emailOrNickname);
+    
+            if (account == null) {
+                account = accountRepository.findByNickname(emailOrNickname);
+            }
+    
+            if (account == null) {
+                throw new UsernameNotFoundException(emailOrNickname);
+            }
+    
+            return new UserAccount(account);
+        }
+        }
+      ```
+    
+      - UserDetailService 인터페이스를 상속 받음.
+      - 사용자의 email or nickname을 인자로 받아 데이터베이스에서 해당 사용자를 조회함.
+      - 사용자를 찾지 못할 경우에 UsernameNotFoundException 예외를 발생 시킴.
+      - 사용자를 찾으면 USerAccount 객체로 반환하여 Spring Security가 사용자 인증을 처리할 수 있도록 함. 
