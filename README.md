@@ -339,57 +339,57 @@ public class AppConfig {
         - 이메일 인증이 되지 않은 사용자는 위 로직을 통해 이메일 인증 알림창이 뜸.
         - 
 - UserAccount
-  - ```
-        @Getter @Setter
-        public class UserAccount extends User {
-        private final Account account;
-
-        public UserAccount(Account account) {
-            super(account.getNickname(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
-            this.account = account;
-        }
-    }
-    ```
+     - ```
+            @Getter @Setter
+            public class UserAccount extends User {
+            private final Account account;
     
-      - UserAccount 클래스는 Spring Security의 User 클래스를 확장하여, 애플리케이션 사용자 정보를 포함하는 역할을 함.
-      - Account 도메인 객체를 참조하여 User 클래스 생성자에 사용자 이름, 비밀번호, 권한을 초기화함.
+            public UserAccount(Account account) {
+                super(account.getNickname(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                this.account = account;
+            }
+        }
+        ```
+        
+          - UserAccount 클래스는 Spring Security의 User 클래스를 확장하여, 애플리케이션 사용자 정보를 포함하는 역할을 함.
+          - Account 도메인 객체를 참조하여 User 클래스 생성자에 사용자 이름, 비밀번호, 권한을 초기화함.
         
 - AccountSevice
- - ```
-       public void login(Account account) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-            new UserAccount(account),
-            account.getPassword(),
-            List.of(new SimpleGrantedAuthority("ROLE_USER"))
-        );
-
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(token);
-    }
-   ```
-   
-    - Account 객체를 인자로 받아 사용자 인증 토큰을 생성함. ( UsernamePasswordAuthenticationToken )
-    - 생성된 토큰을 SecurityContext에 설정하여 사용자 인증 상태를 유지함.
-  
-- ```
-     @Override
-    public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
-        Account account = accountRepository.findByEmail(emailOrNickname);
-
-        if (account == null) {
-            account = accountRepository.findByNickname(emailOrNickname);
+     - ```
+           public void login(Account account) {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account),
+                account.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+    
+            SecurityContext context = SecurityContextHolder.getContext();
+            context.setAuthentication(token);
         }
-
-        if (account == null) {
-            throw new UsernameNotFoundException(emailOrNickname);
+       ```
+       
+        - Account 객체를 인자로 받아 사용자 인증 토큰을 생성함. ( UsernamePasswordAuthenticationToken )
+        - 생성된 토큰을 SecurityContext에 설정하여 사용자 인증 상태를 유지함.
+      
+    - ```
+         @Override
+        public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+            Account account = accountRepository.findByEmail(emailOrNickname);
+    
+            if (account == null) {
+                account = accountRepository.findByNickname(emailOrNickname);
+            }
+    
+            if (account == null) {
+                throw new UsernameNotFoundException(emailOrNickname);
+            }
+    
+            return new UserAccount(account);
         }
-
-        return new UserAccount(account);
-    }
-    }
-  ```
-
-  - UserDetailService 인터페이스를 상속 받음.
-  - 사용자의 email or nickname을 인자로 받아 데이터베이스에서 해당 사용자를 조회함.
-  - 사용자를 찾지 못할 경우에 UsernameNotFoundException 예외를 발생 시킴.
-  - 사용자를 찾으면 USerAccount 객체로 반환하여 Spring Security가 사용자 인증을 처리할 수 있도록 함.
+        }
+      ```
+    
+      - UserDetailService 인터페이스를 상속 받음.
+      - 사용자의 email or nickname을 인자로 받아 데이터베이스에서 해당 사용자를 조회함.
+      - 사용자를 찾지 못할 경우에 UsernameNotFoundException 예외를 발생 시킴.
+      - 사용자를 찾으면 USerAccount 객체로 반환하여 Spring Security가 사용자 인증을 처리할 수 있도록 함.
