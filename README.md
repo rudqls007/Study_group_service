@@ -404,3 +404,58 @@ public class AppConfig {
       - 사용자의 email or nickname을 인자로 받아 데이터베이스에서 해당 사용자를 조회함.
       - 사용자를 찾지 못할 경우에 UsernameNotFoundException 예외를 발생 시킴.
       - 사용자를 찾으면 USerAccount 객체로 반환하여 Spring Security가 사용자 인증을 처리할 수 있도록 함. 
+
+### 로그인 기억하기 ( Spring Security - rememberMe )
+
+- JSESSIONID이 만료되거나 쿠키가 없을 지라도 어플리케이션이 사용자를 기억하는 기능이다. 자동 로그인 기능을 떠올리면 쉽다.
+- Remember-Me 토큰 쿠키를 이용한다. 서버는 이 토큰의 유효성을 검사하고, 검증되면 사용자는 로그인된다.
+
+
+- SecurityConfig
+
+    - ```
+       @Override
+        protected void configure(HttpSecurity http) throws Exception {
+           http.rememberMe()
+                .userDetailsService(accountService)
+                .tokenRepository(tokenRepository());
+        }
+
+      @Bean
+        public PersistentTokenRepository tokenRepository() {
+            JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+            tokenRepository.setDataSource(dataSource);
+    
+            return tokenRepository;
+        }
+      ```
+      - rememberMe() 활성화
+      - userDetailService 인터페이스를 구현한 accountService를 통해 사용자 인증 정보를 가져옴.
+      - tokenRepository 메서드를 호출하여 토큰 저장소를 설정함.
+      - Spring Context에 이 메서드의 반환값을 빈으로 등록하여 다른 곳에서 이 빈을 주입받아 사용할 수 있도록 함.
+      - JdbcTokenRepositoryImpl 클래스는 PersistentTokenRepository 인터페이스의 구현체 중 하나로 JDBC를 사용하여 토큰 정보를 데이터베이스에 저장함.
+      - 데이터베이스에 접근하기 위해 setDataSource(dataSource)를 설정함. dataSource는 애플리케이션에서 데이터베이스 연결을 관리하는 빈임.
+
+- PersistentLogins
+    - ```
+        @Table(name = "persistent_logins")
+        @Entity
+        @Getter @Setter
+        public class PersistentLogins {
+        
+        
+            @Id
+            @Column(length = 64)
+            private String series;
+        
+            @Column(nullable = false, length = 64)
+            private String username;
+        
+            @Column(nullable = false, length = 64)
+            private String token;
+        
+            @Column(name = "last_used", nullable = false, length = 64)
+            private LocalDateTime lastUsed;
+        }
+      ```
+      - User를 상속 받은 Entity 객체(Account)를 찾아서 jdbc 클래스에 있는 스키마에 해당하는 스키마가 생성될 수 있도록 매핑을 하는 역할을 함. ( 즉 쿠키를 사용하기 위한 엔티티 )
