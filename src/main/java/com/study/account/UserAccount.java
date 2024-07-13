@@ -12,7 +12,7 @@ public class UserAccount extends User {
 
     /* anonymous가 아닌 account 프로퍼티가 나오면 account의 정보를 꺼내게 됨. */
 
-    private final Account account;
+    private Account account;
 
     public UserAccount(Account account) {
         /* super 키워드를 통해 부모 클래스인 User의 생성라를 호출하여 초기화함.
