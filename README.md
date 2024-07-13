@@ -407,7 +407,11 @@ public class AppConfig {
 
 ### 로그인 기억하기 ( Spring Security - rememberMe )
 
-- JSESSIONID이 만료되거나 쿠키가 없을 지라도 어플리케이션이 사용자를 기억하는 기능이다. 자동 로그인 기능을 떠올리면 쉽다.
+![login](https://github.com/user-attachments/assets/ea91a789-ab16-48a3-9127-e366cd0f665f)
+
+![remeber](https://github.com/user-attachments/assets/620293b6-b8e3-42b2-9f94-23cb04fafcba)
+
+- JSESSIONID 이 만료되거나 쿠키가 없을 지라도 어플리케이션이 사용자를 기억하는 기능이다. 자동 로그인 기능을 떠올리면 쉽다.
 - Remember-Me 토큰 쿠키를 이용한다. 서버는 이 토큰의 유효성을 검사하고, 검증되면 사용자는 로그인된다.
 
 
