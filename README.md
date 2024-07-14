@@ -77,19 +77,19 @@ GRANT ALL PRIVILEGES ON DATABASE testdb TO testuser;
 
 ## 프로젝트 구성
 
-### Node.js 설정
+### Node.js 설정 ( 프론트 라이브러리 )
 
-### npm 설치
+#### npm 설치
 
 
-### Node.js 초기화 및 package.json 생성
+#### Node.js 초기화 및 package.json 생성
 ```
 $ npm init
 ```
 ![image](https://github.com/rudqls007/Study_group_service/assets/111556581/af3eaa2b-3687-437a-9fa2-80c4b4769c6d)
 
 
-### Bootstrap 및 jquery, Maven Wrappper 빌드
+#### Bootstrap 및 jquery, Maven Wrappper 빌드
 ```
 $ npm install bootstrap
 $ npm install jquery --save
@@ -97,12 +97,12 @@ $ ./mvnw test
 ```
 ![image](https://github.com/rudqls007/Study_group_service/assets/111556581/a2cf065b-6ba9-478f-a1cb-d584c356c669)
 
-### Maven 빌드를 해야 하는 이유는 ?
+#### Maven 빌드를 해야 하는 이유는 ?
 
 - 메이븐 pom.xml을 빌드할 때 static 디렉토리 아래에 있는 package.json도 빌드하도록 설정해야 한다.
 - 빌드를 안하면 프론트엔드 라이브러리를 받아오지 않아서 뷰에서 필요한 참조가 끊어지고 화면이 제대로 보이지 않는다.
 
-### pom.xml
+#### pom.xml
 
 ```
 <plugin>
@@ -135,6 +135,12 @@ $ ./mvnw test
 </plugin>
 ```
 
+#### cropper ( 프로필 이미지 )
+```
+$ npm install cropper
+$ npm install jquery-cropper
+
+```
 
 
 ### 스프링 시큐리티 PasswordEncoder 예제
@@ -635,3 +641,61 @@ https://github.com/user-attachments/assets/617e396a-57f3-4c96-836b-203229682c24
         }
       ```
       - User를 상속 받은 Entity 객체(Account)를 찾아서 jdbc 클래스에 있는 스키마에 해당하는 스키마가 생성될 수 있도록 매핑을 하는 역할을 함. ( 즉 쿠키를 사용하기 위한 엔티티 )
+
+### 프로필 이미지 변경
+
+![20240715_081900-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/a9045da8-7fc0-41c4-a6a9-08f304e434e8)
+
+- cropper 라이브러리를 활용하여 프로필 이미지 변경하기 ( npm으로 라이브러리 설치 )
+- ```java
+   // 프로필 이미지 파일을 선택하면 ( 값이 바뀌면 시작 함 )
+        $("#profile-image-file").change(function(e) {
+            if (e.target.files.length === 1) {
+                // FileReader를 만듦
+                const reader = new FileReader();
+                // 파일을 읽어 옴으로써 온 로드 상태일 때
+                reader.onload = e => {
+                    if (e.target.result) {
+                        let img = document.createElement("img");
+                        img.id = 'new-profile';
+                        img.src = e.target.result;
+                        img.width = 250;
+
+                        // 새로운 이미지 태그를 생성
+                        $newProfileImage.html(img);
+                        // 새로운 이미지 파일을 보여줌
+                        $newProfileImage.show();
+                        // 현재 이미지 파일을 숨겨줌 ( 새로 로딩한 것을 보여줌 )
+                        $currentProfileImage.hide();
+
+                        // 크로퍼 적용 ! 새로운 이미지 파일을 읽어 옴
+                        let $newImage = $(img);
+                        // 이미지 파일을 잘라낼 영역 표시
+                        $newImage.cropper({aspectRatio: 1});
+                        cropper = $newImage.data('cropper');
+
+                        // 잘라내기 버튼 보여주고
+                        $cutBtn.show();
+                        // 확인 버튼 숨기고
+                        $confirmBtn.hide();
+                        // 리셋 버튼 보여줌
+                        $resetBtn.show();
+                    }
+                };
+
+                // 파일을 읽어 옴
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+  ```
+- ```java
+     <svg th:if="${#strings.isEmpty(account?.profileImage)}" th:data-jdenticon-value="${#authentication.name}"
+                         width="24" height="24" class="rounded border bg-light"></svg>
+     <img th:if="${!#strings.isEmpty(account?.profileImage)}" th:src="${account.profileImage}"
+                         width="24" height="24" class="rounded border"/>
+  ```
+  - account 객체에 프로필 이미지 값이 비었다면, jdenticon을 활용하여 기본 이미지를 생성함.
+  - 프로필 이미지 값이 있다면 해당 사용자의 프로필 이미지를 보여줌. ( dataURL 사용 )
+  - DataURL (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)
+    - data URI 체계는 외부 리소스인 것처럼 웹 페이지에 인라인 데이터를 포함하는 방법을 제공하는 URI(Uniform Resource Identifier) 체계임
+    - 이미지, 스타일 시트 같은 별도 요소를 단일 HTTP 요청으로 가져올 수 있음.
