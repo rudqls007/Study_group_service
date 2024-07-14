@@ -307,9 +307,7 @@ public class AppConfig {
 
 1. 문제 발생
 
-![image](https://github.com/user-attachments/assets/7ee0e410-c2da-40c5-ac0d-d7b26fbccc7e)
-
-![image](https://github.com/user-attachments/assets/90bdb9d6-04cc-42af-9040-a6f4c36880be)
+https://github.com/user-attachments/assets/0c3c3f27-9108-43e2-8838-5eeb88de4bda
 
 
 - 로필 수정 기능이 제대로 동작하지 않아 사용자가 프로필을 업데이트하려고 해도 변경 사항이 저장되지 않음.
@@ -343,12 +341,14 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
 
 4. 해결 방법
 
-![image](https://github.com/user-attachments/assets/deb9e75a-bc16-477e-8d2c-a01a6e46966f)
+![image](https://github.com/user-attachments/assets/6fe18594-2f69-40ee-a228-7de97735ebe3)
 
-![image](https://github.com/user-attachments/assets/03917fe2-08db-4401-b736-e433493f6723)
+https://github.com/user-attachments/assets/617e396a-57f3-4c96-836b-203229682c24
 
 
-- 영속성 컨텍스트에 다시 연결: 서비스 메서드에서 `Account` 객체를 영속성 컨텍스트에 다시 연결하여 변경 사항을 반영할 수 있도록 함.
+- 영속성 컨텍스트에 다시 연결: 서비스 메서드에서 `Account` 객체를 영속성 컨텍스트에 다시 연
+
+결하여 변경 사항을 반영할 수 있도록 함.
 
 
 
