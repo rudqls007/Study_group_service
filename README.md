@@ -303,6 +303,55 @@ public class AppConfig {
 
 
 
+⛔ 프로필 수정 문제
+
+1. 문제 발생
+
+![image](https://github.com/user-attachments/assets/7ee0e410-c2da-40c5-ac0d-d7b26fbccc7e)
+
+![image](https://github.com/user-attachments/assets/90bdb9d6-04cc-42af-9040-a6f4c36880be)
+
+
+- 로필 수정 기능이 제대로 동작하지 않아 사용자가 프로필을 업데이트하려고 해도 변경 사항이 저장되지 않음.
+
+2. 문제 원인
+
+![image](https://github.com/user-attachments/assets/2934a918-8878-49bd-8a11-67acb4ba9bfe)
+
+
+![image](https://github.com/user-attachments/assets/2cd68592-2088-416e-aa82-9405a12d7f57)
+
+
+- 프로필 수정이 제대로 되지 않는 핵심 원인은 `Account` 객체의 영속성 문제였음.
+- 컨트롤러에서 `Account` 객체는 로그인 시점에 한 번 영속 상태였다가 이후에 detached 상태가 되었기 때문에, 서비스 클래스의 `updateProfile` 메서드에서 `Account` 객체가 영속성 컨텍스트에 관리되지 않아 변경 사항이 데이터베이스에 반영되지 않음.
+
+JPA 영속성 설명
+
+JPA에서 엔티티의 생명 주기는 다음과 같습니다:
+1. **Transient**: 영속성 컨텍스트와 전혀 관계가 없는 상태.
+2. **Persistent**: 영속성 컨텍스트에 의해 관리되는 상태.
+3. **Detached**: 영속성 컨텍스트에서 분리된 상태.
+4. **Removed**: 삭제된 상태.
+
+- 영속성 컨텍스트는 엔티티를 영속 상태로 유지하고, 변경 사항을 추적하여 데이터베이스에 자동으로 반영합니다. 엔티티가 detached 상태가 되면, 영속성 컨텍스트는 해당 엔티티의 변경 사항을 추적하지 않음. 
+- 따라서 detached 상태의 엔티티에 대한 변경 사항은 데이터베이스에 반영되지 않음.
+
+3. 문제 해결 시도
+
+- 변경된 객체 저장: `updateProfile` 메서드에서 변경된 `Account` 객체를 저장소(repository)에 저장하도록 시도.
+- 세션 업데이트: 세션에 저장된 `Account` 객체를 업데이트하도록 시도.
+
+4. 해결 방법
+
+![image](https://github.com/user-attachments/assets/deb9e75a-bc16-477e-8d2c-a01a6e46966f)
+
+![image](https://github.com/user-attachments/assets/03917fe2-08db-4401-b736-e433493f6723)
+
+
+- 영속성 컨텍스트에 다시 연결: 서비스 메서드에서 `Account` 객체를 영속성 컨텍스트에 다시 연결하여 변경 사항을 반영할 수 있도록 함.
+
+
+
 ## 프로젝트 기능
 
 ### 로그인
