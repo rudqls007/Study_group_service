@@ -438,7 +438,8 @@ class SettingsControllerTest {
 
 1. 문제 발생
 
-https://github.com/user-attachments/assets/0c3c3f27-9108-43e2-8838-5eeb88de4bda
+
+![20240714_211756-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/e11d7f39-c268-4c02-9e69-25e19d3e9cd7)
 
 
 - 프프로필 수정 기능이 제대로 동작하지 않아 사용자가 프로필을 업데이트하려고 해도 변경 사항이 저장되지 않음.
@@ -474,7 +475,8 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
 
 ![image](https://github.com/user-attachments/assets/6fe18594-2f69-40ee-a228-7de97735ebe3)
 
-https://github.com/user-attachments/assets/617e396a-57f3-4c96-836b-203229682c24
+
+![20240714_211501-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/4ce447f0-7004-43e4-9d7b-908df9a2dc61)
 
 
 - 영속성 컨텍스트에 다시 연결: 서비스 메서드에서 `Account` 객체를 영속성 컨텍스트에 다시 연결하여 변경 사항을 반영할 수 있도록 함.
