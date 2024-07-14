@@ -700,4 +700,5 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
   - 프로필 이미지 값이 있다면 해당 사용자의 프로필 이미지를 보여줌. ( dataURL 사용 )
   - DataURL (https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)
     - data URI 체계는 외부 리소스인 것처럼 웹 페이지에 인라인 데이터를 포함하는 방법을 제공하는 URI(Uniform Resource Identifier) 체계임
-    - 이미지, 스타일 시트 같은 별도 요소를 단일 HTTP 요청으로 가져올 수 있음.
+    - data: 라는 접두어를 가진 URL로 파일을 문서에 내장 시킬때 사용할 수 있다.
+    - 이미지를 DataURL로 저장할 수 있고,  이미지, 스타일 시트 같은 별도 요소를 단일 HTTP 요청으로 가져올 수 있음.
