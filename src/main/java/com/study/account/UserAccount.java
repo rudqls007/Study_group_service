@@ -15,7 +15,7 @@ public class UserAccount extends User {
     private Account account;
 
     public UserAccount(Account account) {
-        /* super 키워드를 통해 부모 클래스인 User의 생성라를 호출하여 초기화함.
+        /* super 키워드를 통해 부모 클래스인 User의 생성자를 호출하여 초기화함.
          *  이름, 패스워드, 사용자 권한(USER) */
         super(account.getNickname(), account.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
         /* 전달받은 Account 객체를 account 필드에 저장함. */
