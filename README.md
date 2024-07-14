@@ -207,6 +207,131 @@ public class AppConfig {
 
 ```
 
+### 인증된 사용자를 제공할 커스텀 애노테이션 @WithAccount 을 통한 테스트 코드 작성
+
+
+### 코드 ( @WithAccount )
+
+```java
+package com.study;
+
+import org.springframework.security.test.context.support.WithSecurityContext;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+@WithSecurityContext(factory = WithAccountSecurityContextFactory.class)
+public @interface WithAccount {
+
+    String value();
+
+}
+```
+
+- 테스트에서 인증된 사용자를 설정하는 역할을 지닌 어노테이션
+- 런타임 시점에 어노테이션이 실행되며, WithAccountSecurityContextFactory 클래스를 통해 사용자를 생성하고 인증 정보를 설정함.
+
+### 코드 ( WithAccountSecurityContextFactory )
+
+```java
+package com.study;
+
+import com.study.account.AccountService;
+import com.study.account.SignUpForm;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithSecurityContextFactory;
+
+@RequiredArgsConstructor
+public class WithAccountSecurityContextFactory implements WithSecurityContextFactory<WithAccount> {
+
+    private final AccountService accountService;
+
+    @Override
+    public SecurityContext createSecurityContext(WithAccount withAccount) {
+        String nickname = withAccount.value();
+
+        SignUpForm signUpForm = new SignUpForm();
+        signUpForm.setNickname(nickname);
+        signUpForm.setEmail(nickname + "@example.com");
+        signUpForm.setPassword("12345678");
+        accountService.processNewAccount(signUpForm);
+
+        UserDetails principal = accountService.loadUserByUsername(nickname);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        return context;
+    }
+}
+```
+
+- createSecurityContext 메소드는 WithSecurityContextFactory 인터페이스에서 정의된 메소드로, 인자로 받은 WithAccount 어노테이션에서 지정한 닉네임을 사용하여 사용자 계정을 생성함.
+- SignUpForm ( 회원가입 ) 객체를 쌩성하고, 해당 객체에 대한 닉네임, 이메일, 비밀번호를 설정
+- accountService.processNewAccount(signUpForm) 을 호출하여 영속성 컨텍스트에 저장이 되면서 새로운 사용자 계정을 등록함.
+- 이 후 UserDetail 인터페이스 타입 객체인 principal에 loadUserByUsername ( 사용자 조회 ) 를 사용하여 조회된 사용자 정보로부터 인증 객체를 생성하여 저장함.
+- SecurityContextHolder.createEmptyContext() 를 호출하여 SecurityContext를 생성해 인증 객체를 설정 및 반환함.
+
+### 코드 ( SettingsControllerTest )
+```java
+@SpringBootTest
+@AutoConfigureMockMvc
+class SettingsControllerTest {
+
+    @Autowired
+    MockMvc mockMvc;
+
+
+    @Autowired
+    AccountRepository accountRepository;
+
+
+    @AfterEach
+    void afterEach() throws Exception {
+        accountRepository.deleteAll();
+    }
+
+    @WithAccount("kyungbin")
+    @DisplayName("프로필 수정하기 - 입력값 정상")
+    @Test
+    void updateProfile() throws Exception {
+
+
+        String bio = "짧은 소개를 수정하는 경우.";
+
+        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_URL)
+                        .param("bio", bio)
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(SettingsController.SETTINGS_PROFILE_URL))
+                .andExpect(flash().attributeExists("message"));
+
+        Account kyungbin = accountRepository.findByNickname("kyungbin");
+        assertEquals(bio, kyungbin.getBio());
+
+
+    }
+
+```
+- 위 @WithAccount 어노테이션을 사용하여 WithAccountSecurityContextFactory 클래스가 설정한 인증 정보를 기반으로 한 사용자가 생성됨.
+- kyungbin 닉네임의 사용자가 인증된 상태로 Spring Security와 함께 동작하는 테스트를 수행할 수 있음.
+
+
+### 전체적인 로직의 흐름
+
+1. 테스트 메소드 실행
+   - @WithAccount("kyungbin") 어노테이션이 붙은 테스트 메서다그 실행되면서, kyungbin 닉네임을 가진 사용자를 생성하고, 해당 사용자를 인증된 상태로 설정
+3. WithAccountSecurityContextFactory 클래스 동작
+   - createSecurityContext 메소드를 통해 주어진 닉네임을 가진 사용자를 생성하고, 해당 사용자를 데이터베이스에 등록함.
+   - 이 후 생성된 사용자 정보를 이용하여 Spring Security의 인증 객체를 생성하고, 이를 SecurityContext에 설정하여 반환함.
+5. 테스트 수행
+   - 생성된 인증 정보를 기반으로한 사용자를 Spring Security는 해당 인증 정보를 기반으로 인증 및 권한 검사를 수행 후 인증이 필요한 테스트 로직의 결과를 반환\7함.
+
 
 ## 트러블 슈팅
 
