@@ -272,7 +272,7 @@ public class WithAccountSecurityContextFactory implements WithSecurityContextFac
 ```
 
 - createSecurityContext 메소드는 WithSecurityContextFactory 인터페이스에서 정의된 메소드로, 인자로 받은 WithAccount 어노테이션에서 지정한 닉네임을 사용하여 사용자 계정을 생성함.
-- SignUpForm ( 회원가입 ) 객체를 쌩성하고, 해당 객체에 대한 닉네임, 이메일, 비밀번호를 설정
+- SignUpForm ( 회원가입 ) 객체를 생성하고, 해당 객체에 대한 닉네임, 이메일, 비밀번호를 설정
 - accountService.processNewAccount(signUpForm) 을 호출하여 영속성 컨텍스트에 저장이 되면서 새로운 사용자 계정을 등록함.
 - 이 후 UserDetail 인터페이스 타입 객체인 principal에 loadUserByUsername ( 사용자 조회 ) 를 사용하여 조회된 사용자 정보로부터 인증 객체를 생성하여 저장함.
 - SecurityContextHolder.createEmptyContext() 를 호출하여 SecurityContext를 생성해 인증 객체를 설정 및 반환함.
