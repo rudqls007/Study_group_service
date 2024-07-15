@@ -722,7 +722,7 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
     private String newPasswordConfirm;
     }
   ```
-  - 클라이언트에서 받아 올 PasswordForm 데이
+  - 클라이언트에서 받아 올 PasswordForm 데이터
 
 - ```java
     @Service
