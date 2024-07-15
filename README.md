@@ -723,6 +723,19 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
     }
   ```
   - 클라이언트에서 받아 올 PasswordForm 데이
+
+- ```java
+    @Service
+    @Transactional
+    @RequiredArgsConstructor
+    public class AccountService implements UserDetailsService {
+         public void updatePassword(Account account, String newPassword) {
+            account.setPassword(passwordEncoder.encode(newPassword));
+            accountRepository.save(account); // merge
+        }
+  }
+  ```
+  -  Detached 상태의 객체를 변경한 다음 Repositoiry의 save를 호출해서 상태 변경 내역을 적용 해야함. (Merge)
 - ```java
     package com.study.settings;
 
