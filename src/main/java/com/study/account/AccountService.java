@@ -1,7 +1,10 @@
 package com.study.account;
 
 import com.study.domain.Account;
+import com.study.settings.Notifications;
+import com.study.settings.Profile;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service
@@ -27,11 +31,12 @@ public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     private Account saveNewAccount(SignUpForm signUpForm) {
         Account account = Account.builder()
                 .email(signUpForm.getEmail())
                 .nickname(signUpForm.getNickname())
-                .password(passwordEncoder.encode(signUpForm.getPassword() )) // TODO encoding 해야함
+                .password(passwordEncoder.encode(signUpForm.getPassword())) // TODO encoding 해야함
                 .studyCreatedByWeb(true)
                 .studyEnrollmentResultByWeb(true)
                 .studyUpdateByWeb(true)
@@ -81,7 +86,7 @@ public class AccountService implements UserDetailsService {
         Account account = accountRepository.findByEmail(emailOrNickname);
         if (account == null) {
 
-           account = accountRepository.findByNickname(emailOrNickname);
+            account = accountRepository.findByNickname(emailOrNickname);
         }
 
         if (account == null) {
@@ -89,5 +94,34 @@ public class AccountService implements UserDetailsService {
         }
 
         return new UserAccount(account);
+    }
+
+    public void updateProfile(Account account, Profile profile) {
+
+        account.setUrl(profile.getUrl());
+        account.setOccupation(profile.getOccupation());
+        account.setLocation(profile.getLocation());
+        account.setBio(profile.getBio());
+        account.setProfileImage(profile.getProfileImage());
+
+
+        // account ( detached -> persist )
+        accountRepository.save(account);
+
+    }
+
+    public void updatePassword(Account account, String newPassword) {
+        account.setPassword(passwordEncoder.encode(newPassword));
+        accountRepository.save(account); // merge
+    }
+
+    public void updateNotifications(Account account, Notifications notifications) {
+        account.setStudyCreatedByEmail(notifications.isStudyCreatedByEmail());
+        account.setStudyCreatedByWeb(notifications.isStudyCreatedByWeb());
+        account.setStudyUpdateByEmail(notifications.isStudyUpdateByEmail());
+        account.setStudyUpdateByWeb(notifications.isStudyUpdateByWeb());
+        account.setStudyEnrollmentResultByEmail(notifications.isStudyEnrollmentResultByEmail());
+        account.setStudyEnrollmentResultByWeb(notifications.isStudyEnrollmentResultByWeb());
+        accountRepository.save(account);
     }
 }
