@@ -702,3 +702,75 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
     - data URI 체계는 외부 리소스인 것처럼 웹 페이지에 인라인 데이터를 포함하는 방법을 제공하는 URI(Uniform Resource Identifier) 체계임
     - data: 라는 접두어를 가진 URL로 파일을 문서에 내장 시킬때 사용할 수 있다.
     - 이미지를 DataURL로 저장할 수 있고,  이미지, 스타일 시트 같은 별도 요소를 단일 HTTP 요청으로 가져올 수 있음.
+
+
+### 패스워드 수정
+
+- ```java
+  package com.study.settings;
+
+    import lombok.Data;
+    import org.hibernate.validator.constraints.Length;
+    
+    @Data
+    public class PasswordForm {
+
+    @Length(min = 8, max = 50)
+    private String newPassword;
+
+    @Length(min = 8, max = 50)
+    private String newPasswordConfirm;
+    }
+  ```
+  - 클라이언트에서 받아 올 PasswordForm 데이
+- ```java
+    package com.study.settings;
+
+    import org.springframework.validation.Errors;
+    import org.springframework.validation.Validator;
+    
+    public class PasswordFormValidator implements Validator {
+
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return PasswordForm.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        PasswordForm passwordForm = (PasswordForm) target;
+        if (!passwordForm.getNewPassword().equals(passwordForm.getNewPasswordConfirm())) {
+            errors.rejectValue("newPassword",
+                    "wrong.value", "입력한 새 패스워드가 일치하지 않습니다.");
+        }
+    }
+    }
+
+  ```
+  - supports 메서드는 이 Validator가 PasswordForm 객체를 지원하는지 확인하고, PasswordForm 클래스 또는 그 하위 클래스의 인스턴스를 검증할 수 있음.
+  - validate 메서드는 두 패스워드가 일치하지 않으면 Errors 객체에 에러를 추가함 이는 Spring의 Validator 인터페이스를 구현한 것임.
+
+- ```java
+    @InitBinder("passwordForm")
+    public void initPasswordBinder(WebDataBinder binder) {
+        binder.addValidators(new PasswordFormValidator());
+    }
+        @PostMapping(SETTINGS_PASSWORD_URL)
+        public String updatePassword(@CurrentUser Account account,
+                                     @Valid PasswordForm passwordForm, Errors errors,
+                                     Model model, RedirectAttributes attributes) {
+
+    if (errors.hasErrors()) {
+        model.addAttribute(account);
+        return SETTINGS_PASSWORD_VIEW_NAME;
+    }
+
+    accountService.updatePassword(account, passwordForm.getNewPassword());
+    attributes.addFlashAttribute("message", "패스워드를 변경했습니다.");
+    return "redirect:" + SETTINGS_PASSWORD_URL;
+    }
+  ```
+  - @InitBinder("passwordForm") 를 통해 PasswordForm 객체에 데이터 바인딩과 유효성을 검사함.
+  - @CurrentUser 어노테이션을 통해 해당 Account 객체 즉, 현재 사용자 정보를 가져옴.
+  - @Valid 어노테이션을 통해 PassowrdForm 객체를 검증하고, PasswordFormValidator에서 설정한 규칙에 따라 검증이 수행됨.
+  - RedirectAttributes를 통해 일회성 메세지를 함께 반환함.
