@@ -1,11 +1,10 @@
 package com.study.account;
 
 import com.study.domain.Account;
-import com.study.settings.Notifications;
-import com.study.settings.Profile;
+import com.study.settings.form.Notifications;
+import com.study.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 @Service

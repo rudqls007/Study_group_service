@@ -1,11 +1,7 @@
-package com.study.settings;
+package com.study.settings.form;
 
-import com.study.domain.Account;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-
-import javax.persistence.Lob;
 
 @Data
 public class Profile {

@@ -739,7 +739,7 @@ JPA에서 엔티티의 생명 주기는 다음과 같습니다:
 - ```java
     package com.study.settings;
 
-    import org.springframework.validation.Errors;
+    import com.study.settings.form.PasswordForm;import org.springframework.validation.Errors;
     import org.springframework.validation.Validator;
     
     public class PasswordFormValidator implements Validator {
