@@ -8,7 +8,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.Lob;
 
 @Data
-@NoArgsConstructor
 public class Profile {
 
     @Length(min = 1, max = 35)
@@ -22,11 +21,4 @@ public class Profile {
 
     private String profileImage;
 
-    public Profile(Account account) {
-        this.bio = account.getBio();
-        this.url = account.getUrl();
-        this.occupation = account.getOccupation();
-        this.location = account.getLocation();
-        this.profileImage = account.getProfileImage();
-    }
 }
