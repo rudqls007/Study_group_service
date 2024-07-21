@@ -4,6 +4,7 @@ import com.study.domain.Account;
 import com.study.settings.Notifications;
 import com.study.settings.Profile;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -30,6 +31,7 @@ public class AccountService implements UserDetailsService {
     private final JavaMailSender javaMailSender;
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
 
     private Account saveNewAccount(SignUpForm signUpForm) {
@@ -98,14 +100,7 @@ public class AccountService implements UserDetailsService {
 
     public void updateProfile(Account account, Profile profile) {
 
-        account.setUrl(profile.getUrl());
-        account.setOccupation(profile.getOccupation());
-        account.setLocation(profile.getLocation());
-        account.setBio(profile.getBio());
-        account.setProfileImage(profile.getProfileImage());
-
-
-        // account ( detached -> persist )
+        modelMapper.map(profile, account);
         accountRepository.save(account);
 
     }
@@ -116,12 +111,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public void updateNotifications(Account account, Notifications notifications) {
-        account.setStudyCreatedByEmail(notifications.isStudyCreatedByEmail());
-        account.setStudyCreatedByWeb(notifications.isStudyCreatedByWeb());
-        account.setStudyUpdateByEmail(notifications.isStudyUpdateByEmail());
-        account.setStudyUpdateByWeb(notifications.isStudyUpdateByWeb());
-        account.setStudyEnrollmentResultByEmail(notifications.isStudyEnrollmentResultByEmail());
-        account.setStudyEnrollmentResultByWeb(notifications.isStudyEnrollmentResultByWeb());
+        modelMapper.map(notifications, account);
         accountRepository.save(account);
     }
 }
