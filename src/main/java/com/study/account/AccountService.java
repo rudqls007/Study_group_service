@@ -1,6 +1,7 @@
 package com.study.account;
 
 import com.study.domain.Account;
+import com.study.settings.form.NicknameForm;
 import com.study.settings.form.Notifications;
 import com.study.settings.form.Profile;
 import lombok.RequiredArgsConstructor;
@@ -111,5 +112,12 @@ public class AccountService implements UserDetailsService {
     public void updateNotifications(Account account, Notifications notifications) {
         modelMapper.map(notifications, account);
         accountRepository.save(account);
+    }
+
+    public void updateNickname(Account account, NicknameForm nickname) {
+
+        modelMapper.map(nickname, account);
+        accountRepository.save(account);
+        login(account);
     }
 }
