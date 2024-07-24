@@ -2,11 +2,8 @@ package com.study.settings;
 
 import com.study.WithAccount;
 import com.study.account.AccountRepository;
-import com.study.account.AccountService;
-import com.study.account.SignUpForm;
 import com.study.domain.Account;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
