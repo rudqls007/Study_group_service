@@ -1,6 +1,7 @@
-package com.study.account;
+package com.study.account.validator;
 
-import com.study.form.SignUpForm;
+import com.study.account.AccountRepository;
+import com.study.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

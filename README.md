@@ -244,7 +244,7 @@ public @interface WithAccount {
 package com.study;
 
 import com.study.account.AccountService;
-import com.study.form.SignUpForm;
+import com.study.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

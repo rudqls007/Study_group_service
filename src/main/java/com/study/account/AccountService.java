@@ -1,7 +1,7 @@
 package com.study.account;
 
 import com.study.domain.Account;
-import com.study.form.SignUpForm;
+import com.study.account.form.SignUpForm;
 import com.study.settings.form.NicknameForm;
 import com.study.settings.form.Notifications;
 import com.study.settings.form.Profile;

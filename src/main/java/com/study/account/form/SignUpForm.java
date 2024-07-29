@@ -1,4 +1,4 @@
-package com.study.form;
+package com.study.account.form;
 
 import lombok.Getter;
 import lombok.Setter;
