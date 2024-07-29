@@ -1,7 +1,8 @@
 package com.study.account;
 
+import com.study.account.validator.SignUpFormValidator;
 import com.study.domain.Account;
-import com.study.form.SignUpForm;
+import com.study.account.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
